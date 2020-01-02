@@ -27,7 +27,7 @@ until xterm -display $display -geom 0x0 -bd black -bg black -cr black -fg black 
     sleep 1
 done
 
-. /home/gabriel/bin/sdesktop $display
+. $HOME/bin/sdesktop $display
 
 # Previous kbd options: -keybd evdev,,device=/dev/input/by-id/$kbd,xkbrules=xorg,xkbmodel=evdev,xkblayout=latam
 # They don't really matter anyways as they will be overriden by sdesktop
