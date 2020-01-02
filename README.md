@@ -8,3 +8,13 @@ Some bash scripts to make multiseat (two people using the same computer at the s
 `ms-conf`: Configuration: change the keyboard and mouse that will be used to control the additional seat
 
 `sdesktop`: Lightweight desktop environment for the seat
+
+Dependencies:
+
+* Any Linux distro
+* kdesu
+* Xephyr
+* VirtualGL
+* Zenity
+* Openbox
+* LXQt
