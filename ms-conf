@@ -1,0 +1,44 @@
+#!/bin/bash
+
+t="Multiseat configuration"
+res=`zenity --list --title="$t" --column "Select resolution:" "1280x1024" "1440x900" "Other" 2>/dev/null`
+
+if [ -z "$res" ]; then
+    exit 1
+fi
+
+if [ "$res" == "Other" ]
+  then
+    res=`zenity --entry --title="$t" --text="Enter resolution:" 2>/dev/null`
+    if [ -z "$res" ]; then
+    exit 1
+    fi
+fi
+
+cd /dev/input/by-id/
+
+kbd=`zenity --list --title="$t" --column="Select keyboard" *kbd* 2>/dev/null`
+if [ -z "$kbd" ]; then
+    exit 1
+fi
+
+mouse=`zenity --list --title="$t" --column="Select mouse" *mouse* 2>/dev/null`
+if [ -z "$mouse" ]; then
+    exit 1
+fi
+
+#session=`zenity --entry --title="$t" --text="Choose session or command to run:" --entry-text="openbox-session" 2>/dev/null`
+#if [ -z "$session" ]; then
+#    exit 1
+#fi
+
+cat <<EOT > ~/bin/ms.conf
+
+# Multiseat configuration file
+
+res=$res
+kbd=$kbd
+mouse=$mouse
+#session=$session
+
+EOT

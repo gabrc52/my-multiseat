@@ -1,0 +1,65 @@
+#!/bin/bash
+if [ -z "$@" ]; then
+    echo "Running on :3. To override this run 'sdesktop :DISPLAY'"
+    ORIG_DISPLAY=$DISPLAY
+    export DISPLAY=:3
+else
+    echo Running desktop on $1
+    ORIG_DISPLAY=$DISPLAY
+    export DISPLAY=$1
+fi
+
+#### Taken from /usr/bin/startlxqt ####
+
+contains()
+{
+    local str="$1" substr="$2"
+    [ "$str" = "$substr" -o -z "${str##$substr:*}" -o -z "${str##*:$substr:*}" -o -z "${str%%*:$substr}" ]
+}
+
+if [ -z "$XDG_DATA_HOME" ]; then
+    export XDG_DATA_HOME="$HOME/.local/share"
+fi
+
+if [ -z "$XDG_CONFIG_HOME" ]; then
+    export XDG_CONFIG_HOME="$HOME/.config"
+fi
+
+if [ -z "$XDG_DATA_DIRS" ]; then
+    XDG_DATA_DIRS="$XDG_DATA_HOME:/usr/local/share:/usr/share"
+else
+    if ! contains "$XDG_DATA_DIRS" "/usr/share"; then
+        XDG_DATA_DIRS="$XDG_DATA_DIRS:/usr/share"
+    fi
+fi
+export XDG_DATA_DIRS
+
+if [ -z "$XDG_CONFIG_DIRS" ]; then
+    export XDG_CONFIG_DIRS="/etc/xdg"
+else
+    if ! contains "$XDG_CONFIG_DIRS" '/etc/xdg'; then
+        XDG_CONFIG_DIRS="$XDG_CONFIG_DIRS:/etc/xdg"
+    fi
+fi
+
+if [ -z "$XDG_CACHE_HOME" ]; then
+    export XDG_CACHE_HOME="$HOME/.cache"
+fi
+
+# Launch DBus if needed
+#if [ -z "$DBUS_SESSION_BUS_ADDRESS" ]; then
+#    if [ -z "$XDG_RUNTIME_DIR" ] || ! [ -S "$XDG_RUNTIME_DIR/bus" ] || ! [ -O 
+#"$XDG_RUNTIME_DIR/bus" ]; then
+#        eval "$(dbus-launch --sh-syntax --exit-with-session)" || echo "startlxqt: error executing dbus-launch" >&2
+#    fi
+#fi
+
+#export XDG_MENU_PREFIX="lxqt-"
+#export XDG_CURRENT_DESKTOP="LXQt"
+
+####
+
+vglrun -- openbox & vglrun -- lxqt-panel & vglrun -- lxqt-runner & vglrun -- pcmanfm-qt --desktop -d &
+set
+
+setxkbmap -display $ORIG_DISPLAY -print | xkbcomp - $DISPLAY # Fix keyboard layout
